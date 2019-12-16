@@ -7,20 +7,55 @@
 <!-- list template -->
 <div>
 
-  <h1>{{ .Title }}</h1>
+  {{ if gt .Paginator.TotalPages 1 }}
+  <nav class="paginate-container">
+    <div class="pagination">
+      <ul>
+        {{ if .Paginator.HasPrev }}
+        <a href="{{ .Paginator.Prev.URL }}" class="previous_page">Prev</a>
+        {{ else }}
+        <span class="previous_page disabled">Prev</span>
+        {{ end }}
+
+        {{ range .Paginator.Pagers }}
+          <a href="{{ .URL }}">
+            {{ .PageNumber }}
+          </a>
+        {{ end }}
+
+        {{ if .Paginator.HasNext }}
+        <a href="{{ .Paginator.Next.URL }}" class="next_page">Next</a>
+        {{ else }}
+        <span class="next_page disabled">Next</span>
+        {{ end }}
+      </ul>
+    </div>
+  </nav>
+  {{ end }}
+
   {{ .Content }}
 
   {{ range .Paginator.Pages }}
   <div>
     <div>
+      <div class="Subhead-description">
+        <span><b>{{ .Date.Format "2006-01-02" }}</b></span>
+        <div class="float-md-right">
+          {{ partial "taxonomy.html" . }}
+        </div>
+      </div>
       <a href="{{ .RelPermalink }}">
         <h3>{{ .Title }}</h3>
       </a>
-      <small>{{ .Permalink }}</small>
-      {{ .Date.Format "2006-01-02" }}
     </div>
     {{ .Summary }}
+    {{ if .Truncated }}
+      <div>
+        <a href="{{ .RelPermalink }}">Открыть полностью…</a>
+      </div>
+    {{ end }}
   </div>
+  <hr>
   {{ end }}
 
   {{ if gt .Paginator.TotalPages 1 }}
